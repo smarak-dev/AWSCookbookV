@@ -1,0 +1,65 @@
+1. Use AWS Secrets Manager to generate a complex password:
+
+ADMIN_PASSWORD=$(aws secretsmanager get-random-password \
+--exclude-punctuation \
+--password-length 41 --require-each-included-type \
+--output text \
+--query RandomPassword)
+
+
+2. Create a VPC with an IPv4 CIDR block
+
+VPC_ID=$(aws ec2 create-vpc --cidr-block 10.10.0.0/16 \
+--tag-specifications
+'ResourceType=vpc,Tags=[{Key=Name,Value=AWSCookbook202}]' \
+--output text --query Vpc.VpcId)
+
+$ VPC_ID=$(aws ec2 create-vpc --cidr-block 10.10.0.0/16 \
+--tag-specifications
+'ResourceType=vpc,Tags=[{Key=Name,Value=AWSCookbook202}]' \
+--output text --query Vpc.VpcId)
+
+bash: ResourceType=vpc,Tags=[{Key=Name,Value=AWSCookbook202}]: command not found
+
+3. 
+
+export AWS_REGION=us-east-1
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
+--query Account --output text)
+aws ec2 describe-instances
+
+4. 
+
+Create two subnets, one in each AZ. This will define the address
+spaces for you to create resources for your VPC:
+
+
+SUBNET_ID_1=$(aws ec2 create-subnet --vpc-id $VPC_ID \
+--cidr-block 10.10.0.0/24 --availability-zone ${AWS_REGION}a \
+--tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=AWSCookbook202a}]' \
+--output text --query Subnet.SubnetId)
+
+
+SUBNET_ID_2=$(aws ec2 create-subnet --vpc-id $VPC_ID \
+--cidr-block 10.10.1.0/24 --availability-zone ${AWS_REGION}b \
+--tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=AWSCookbook202b}]' \
+--output text --query Subnet.SubnetId)
+
+2. Create a database subnet group specifying the VPC subnets to use for
+the cluster. Database subnet groups simplify the placement of RDS
+elastic network interfaces (ENIs):
+
+aws rds create-db-subnet-group \
+--db-subnet-group-name awscookbook401subnetgroup \
+--db-subnet-group-description "AWSCookbook401 subnet group" \
+--subnet-ids $SUBNET_ID_1 $SUBNET_ID_2
+
+(An error occurred (InvalidParameterValue) when calling the CreateDBSubnetGroup operation: The input isn't valid. Input can't contain control characters.
+$ aws rds create-db-subnet-group \
+--db-subnet-group-name awscookbook401subnetgroup \
+--db-subnet-group-description "AWSCookbook401 subnet group" \
+--subnet-ids $SUBNET_ID_1 $SUBNET_ID_2
+
+An error occurred (InvalidSubnet) when calling the CreateDBSubnetGroup operation: Subnet IDs are required.
+)
+

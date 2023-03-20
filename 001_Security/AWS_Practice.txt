@@ -1,0 +1,404 @@
+oreilly-google-cloud-cookbook-main\oreilly-google-cloud-cookbook-main\09-data-processing-tools
+
+-------------------------------------------
+DecServicException.java 
+
+public class Deci extends Exception {
+
+//Serialization ID
+
+private static final long 
+
+-------------------------------------
+python3 spamEmailDetection.py
+
+#os.system('clear')
+import re
+
+def removeSpecialCharacters(text):
+    pattern = r'[^a-zA-z0-9\s]'
+    return re.sub(pattern, '', text)
+
+testText = "'This'; is a #test $tring, sent: to @someone."
+print('\n\n\nTEST FOR REMOVING SPECIAL CHARACTERS')
+print('\nOriginal Text:', testText)
+print('\nAfter removing Special Characters:', removeSpecialCharacters(testText.lower()))
+
+--------------------------
+Remove URLs
+
+import re
+
+def removeURLs(text):
+    return re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', text)
+
+testText = "Click this link to register - https://www.fake.com OR this link for information - http://info.org or download this file - file://test.txt"
+print('\n\n\nTEST FOR REMOVING URLS')
+print('\nOriginal Text:', testText)
+print('\nAfter removing URLs:', removeURLs(testText.lower()))
+
+
+-----------------------------
+
+Remove Numbers
+
+os.system('clear')
+import re
+
+def removeNumbers(text):
+    return re.sub('([0-9]+)', '', text)
+
+testText = "This text contains 66 numbers and 1654 characters."
+print('\n\n\nTEST FOR REMOVING NUMBERS')
+print('\nOriginal Text:', testText)
+print('\nAfter removing numbers:', removeNumbers(testText.lower()))
+
+
+-------------------------
+
+Remove Extra White Spaces
+
+os.system('clear')
+def removeExtraWhiteSpaces(text):
+    return " ".join(text.split())
+
+testText = "This   is a    test of removing     extra white    spaces"
+print('\n\n\nTEST FOR REMOVING EXTRA SPACES')
+print('\nOriginal Text:', testText)
+print('\nAfter removing extra spaces:', removeExtraWhiteSpaces(testText.lower()))
+
+
+-------------------------
+
+Put Together Functions to Clean the Data
+
+os.system('clear')
+def cleanData(text):
+    text = text.lower()
+    text = removeURLs(text)
+    text = removeSpecialCharacters(text)
+    text = removeStopWords(text)
+    text = removeNumbers(text)
+    text = removeExtraWhiteSpaces(text)
+
+    return text
+
+testText = "Hello, I came across your profile in LinkedIn.   Would like to connect.   Please mail at someone@somewhere.com. Our website is https://somewhere.com"
+print('\n\n\nTEST FOR PRE-PROCESSING TEXT')
+print('\nOriginal Text:', testText)
+print('\nAfter cleaning text:', cleanData(testText.lower()))
+
+
+----------------
+
+Perform a Test to Clean the Data
+
+os.system('clear')
+import pandas as pd
+
+text1 = 'Hello, I came across your profile in LinkedIn. Would like to connect. Please mail at someone@somewhere.com. Out website is https://somewhere.com'
+text2 = 'Subject: Marriage Please come to my marriage on 12-Dec-2021. I will be grateful, Regards'
+text3 = 'Subject: Proposal Please find attacched the proposal for disinfexction of your house. Call me at 9988776655 for further details. Regards, Ravi ravi@pestcontrol.com www.pestcontrol.com'
+text4 = 'Subject: Appointment Letter Congratulations!!! We are happy to offer you employment in our orgaisation. Look forward to seeing you at our  office on 01-Jan-2022. Best wishes.'
+text5 = 'Subject: Project Report Dear Sir, Please find attached my project report. Look forward to your comments and evaluation.'
+data  = pd.DataFrame([text1, text2, text3, text4, text5], columns = ['text'])
+print('\n\n\nOriginal Text\n', data)
+
+cleanText = data['text'].apply(cleanData)
+print('\nCleaned Text\n', cleanText)
+
+
+---------------------
+
+$ history
+    1  echo -e "Log in URL: $console \n Username: $username \n Password: $password"
+    2  aws ec2 describe-images --no-cli-pager --region $REGION  --owners self amazon --filters "Name=description,Values=*ubuntu2004*" --query 'Images[*].[ImageId]' --output text
+    3  aws ec2 create-key-pair --key-name key-$username-$randomNum --query 'KeyMaterial' --output text > key-$username-$randomNum-keypair.pem
+    4  aws ec2 run-instances --no-cli-pager --image-id ami-072d6c9fae3253f26 --count 1 --instance-type t2.micro --key-name key-$username-$randomNum --block-device-mappings 'DeviceName=/dev/sda1,Ebs={VolumeSize=30}'
+    5  aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId,State:State.Name}" --output json
+    6  aws ec2 describe-instances --query "Reservations[*].Instances[*].{InstanceId:InstanceId}" --output json | jq -r .[][].InstanceId
+    7  aws ec2 describe-instances --query "Reservations[*].Instances[*].{InstanceId:InstanceId}" --output json | jq -r .[][].InstanceId | xargs aws ec2 terminate-instances --instance-ids
+    8  aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId,Subnet:SubnetId,State:State.Name}" --output json
+    9  history
+$ 
+
+
+
+--------------------------
+
+
+Your Interactive Terminal
+
+Waiting for Amazon Web Services credentials to be created
+This is expected to take a few moments...
+
+Thank you! Your Amazon Web Services Credentials have been created.
+Username: user-lcdgasdxuvkq
+Password: 0RC08uzuCxdG7Q1
+AWS Access Key: AKIAQQMIXEGOLEX4D2QA
+AWS Secret Key: 189m/MmwnLNvfVYzmmEcq37LDVaAS/65HpQ3S8eO
+
+Log in to https://035183337884.signin.aws.amazon.com/console?region=us-east-1 or using the AWS CLI
+$ 
+$ 
+
+aws s3 mb s3://mybucket-$randomNum  \
+    --region $REGION
+	
+Unable to start the environment. You don't have required permissions. Ask your IAM administrator for access to AWS CloudShell. System error: User: arn:aws:iam::035183337884:user&#x2F;user-lcdgasdxuvkq is not authorized to perform: cloudshell:CreateEnvironment on resource: arn:aws:cloudshell:us-east-1:035183337884:* with an explicit deny
+
+git clone https://github.com/AWSCookbook
+
+
+export AWS_REGION=us-east-1
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
+--query Account --output text)
+aws ec2 describe-instances
+
+
+
+Invalid choice: 'describe-instance', maybe you meant:
+
+  * describe-instances
+  * describe-instance-types
+  * describe-instance-status
+
+$ aws ec2 describe-instances
+{
+    "Reservations": []
+}
+$ aws sts get-caller-identity
+{
+    "UserId": "AIDAQQMIXEGOALMWZAASB",
+    "Account": "035183337884",
+    "Arn": "arn:aws:iam::035183337884:user/user-lcdgasdxuvkq"
+}
+
+------------------------------------
+
+AWS account
+— Setup instructions
+— An IAM user with console and programmatic access
+— Administrator privileges for your IAM user
+Personal computer/laptop
+Software
+— Web browser (e.g., Microsoft Edge, Google Chrome, or Mozilla
+Firefox)
+— Terminal with bash or Z shell (Zsh)
+— Git
+Install instructions
+— Homebrew (optional but recommended to install other requirements)
+Install instructions
+— Code editor (e.g., VSCodium or AWS Cloud9)
+Recommended install: brew install --cask vscodium
+— AWS CLI version 2 (2.1.26 or later)
+Install guide
+Recommended install: brew install awscli@2
+
+----------------------------
+
+git clone https://github.com/AWSCookbook/Security
+git clone https://github.com/AWSCookbook/Getting-Started
+git clone https://github.com/AWSCookbook/Networking
+git clone https://github.com/AWSCookbook/BigData
+git clone https://github.com/AWSCookbook/ArtificialIntelligence
+git clone https://github.com/AWSCookbook/Databases
+git clone https://github.com/AWSCookbook/Containers
+git clone https://github.com/AWSCookbook/Serverless
+git clone https://github.com/AWSCookbook/Storage
+git clone https://github.com/AWSCookbook/HerbsAndSpices
+git clone https://github.com/AWSCookbook/AccountManagement
+
+
+---------------------------------
+
+PRINCIPAL_ARN=$(aws sts get-caller-identity --query Arn --output text)
+
+---------------------------------
+
+git clone https://github.com/AWSCookbook/Security
+
+1.1 Creating and Assuming an IAM Role for
+
+101-Creating-and-Assuming-an-IAM-Role
+
+
+Developer Access
+
+PRINCIPAL_ARN=$(aws sts get-caller-identity --query Arn --output text)
+
+
+sed -e "s|PRINCIPAL_ARN|${PRINCIPAL_ARN}|g" assume-role-policy-template.json > assume-rolepolicy.json
+
+#Create a role and specify the assume role policy file:
+
+ROLE_ARN=$(aws iam create-role --role-name AWSCookbook101Role --assume-role-policy-document file://assume-rolepolicy.json --output text --query Role.Arn)
+
+
+#Attach the AWS managed PowerUserAccess policy to the role:
+
+aws iam attach-role-policy --role-name AWSCookbook101Role --policy-arn arn:aws:iam::aws:policy/PowerUserAccess
+
+
+#Validation checks
+Assume the role:
+aws sts assume-role --role-arn $ROLE_ARN --role-session-name AWSCookbook101
+
+
+#######################################
+102-Generate-Least-Privilege-IAM-Policy
+#######################################
+
+1.2 Generating a Least Privilege IAM Policy Based on Access Patterns
+
+Problem
+You would like to implement least privilege access for your user and scope
+down the permissions to allow access to only the services, resources, and
+actions you need to use in your AWS account.
+Solution
+Use the IAM Access Analyzer in the IAM console to generate an IAM
+policy based on the CloudTrail activity in your AWS account, as shown in
+
+
+Unable to get trails
+You do not have permissions to perform this action. An administrator for your account might need to add permissions to the policy that grants you access to CloudTrail. Learn more
+
+You do not have permissions to perform this action. An administrator for your account might need to add permissions to the policy that grants you access to CloudTrail. Learn more
+
+------------------------------------------
+
+1.3 Enforcing IAM User Password Policies in
+Your AWS Account
+
+#####################################
+
+git clone https://github.com/smarak-dev/AWSCookbookV.git
+
+Waiting for Amazon Web Services credentials to be created
+This is expected to take a few moments...
+
+Thank you! Your Amazon Web Services Credentials have been created.
+Username: user-xddzxatwgjce
+Password: zd39Q6Fn2sLWT0s
+AWS Access Key: AKIA3KPMSJCIOEFMDCVC
+AWS Secret Key: umiT4ISnb9GRc+LJhYRAZ6iKQ+25Mem8BtYFsarp
+
+Log in to https://778422077584.signin.aws.amazon.com/console?region=us-east-1 or using the AWS CLI
+
+
+1. Set an IAM password policy using the AWS CLI to require lowercase
+and uppercase letters, symbols, and numbers. The policy should
+indicate a minimum length of 32 characters, a maximum password
+age of 90 days, and password reuse prevented:
+
+aws iam update-account-password-policy \
+--minimum-password-length 32 \
+--require-symbols \
+--require-numbers \
+--require-uppercase-characters \
+--require-lowercase-characters \
+--allow-users-to-change-password \
+--max-password-age 90 \
+--password-reuse-prevention true
+
+
+Create an IAM group:
+
+aws iam create-group --group-name AWSCookbook103Group
+
+
+aws iam attach-group-policy --group-name AWSCookbook103Group --policy-arn arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess
+
+4. Create an IAM user:
+aws iam create-user --user-name awscookbook103user
+
+{
+    "User": {
+        "Path": "/",
+        "UserName": "awscookbook103user",
+        "UserId": "AIDA3KPMSJCIPGRU652OW",
+        "Arn": "arn:aws:iam::778422077584:user/awscookbook103user",
+        "CreateDate": "2023-03-20T17:12:53+00:00"
+    }
+}
+
+5. Use Secrets Manager to generate a password that conforms to your
+password policy:
+
+RANDOM_STRING=$(aws secretsmanager get-random-password \
+--password-length 32 --require-each-included-type \
+--output text \
+--query RandomPassword)
+
+
+6. Create a login profile for the user that specifies a password:
+aws iam create-login-profile --user-name awscookbook103user --password $RANDOM_STRING
+
+You should see output similar to the following:
+{
+"LoginProfile": {
+"UserName": "awscookbook103user",
+"CreateDate": "2021-11-06T21:11:43+00:00",
+"PasswordResetRequired": false
+}
+}
+
+7. Add the user to the group you created for billing view-only access:
+aws iam add-user-to-group --group-name AWSCookbook103Group --user-name awscookbook103user
+
+
+aws iam get-account-password-policy
+
+{
+"PasswordPolicy": {
+"MinimumPasswordLength": 32,
+"RequireSymbols": true,
+"RequireNumbers": true,
+"RequireUppercaseCharacters": true,
+"RequireLowercaseCharacters": true,
+"AllowUsersToChangePassword": true,
+"ExpirePasswords": true,
+"MaxPasswordAge": 90,
+"PasswordReusePrevention": 1
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################
+103-Enforcing-IAM-User-Password-Policies
+104-Testing-IAM-Policies-with-the-IAM-Policy-Simulator
+105-Delegating-IAM-Administrative-Capabilities-Using-Permissions-Boundaries
+106-Connecting-to-EC2-Instances-Using-Session-Manager
+107-Encrypting-EBS-Volumes-Using-KMS-Keys
+108-Storing-Encrypting-Accessing-Passwords
+109-Blocking-Public-Access-for-S3-Buckets
+110-Serving-Web-Content-Securely-from-S3-with-CloudFront
+
+
+
+
+
+
+
+
+ 
